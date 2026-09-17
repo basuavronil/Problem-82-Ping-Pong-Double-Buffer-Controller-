@@ -60,3 +60,16 @@ Both sides run in parallel with **zero wait states** and **zero memory contentio
               ^                                          |
               |                                          v
       Incoming Data Stream                       Outgoing Data Stream
+
+
+```
+## Output 
+### Waveforms
+<img width="959" height="298" alt="image" src="https://github.com/user-attachments/assets/89eefca3-821a-4b82-a673-ce0f26cb3c61" />
+
+### Simulation Terminal
+<img width="548" height="206" alt="image" src="https://github.com/user-attachments/assets/880eef63-6472-4a53-b532-0dbcc71078aa" />
+
+<img width="535" height="48" alt="image" src="https://github.com/user-attachments/assets/e683fbe2-c4f8-4a33-9241-5d0026874fdf" />
+
+<img width="548" height="270" alt="image" src="https://github.com/user-attachments/assets/6388c2c5-77db-410e-a579-7df25fb8930b" />
