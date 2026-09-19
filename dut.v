@@ -3,6 +3,12 @@ module ping_pong_buffer (
     input  wire       rst_n,
     input  wire       frame_done,
     
+    // frame done is the triggering event and the bank_sel is the internal register that does the switching 
+    // relationship between them 
+    // if (frame_done) 
+    //    bank_sel = ~ bank_sel
+
+    
     // Write Interface (Producer)
     input  wire       wr_en,
     input  wire [3:0] wr_addr,
