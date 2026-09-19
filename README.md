@@ -91,6 +91,7 @@ In digital hardware design (Verilog/VHDL), connecting a temporary signal to long
    | Write Target     |                        | Read Target      |
    | (mem_a or mem_b) |                        | (mem_b or mem_a) |
    +------------------+                        +------------------+
+```
 ## Output 
 ### Waveforms
 <img width="959" height="298" alt="image" src="https://github.com/user-attachments/assets/89eefca3-821a-4b82-a673-ce0f26cb3c61" />
