@@ -63,6 +63,34 @@ Both sides run in parallel with **zero wait states** and **zero memory contentio
 
 
 ```
+# Design Pattern: Transient Event vs. Persistent Register
+
+In digital hardware design (Verilog/VHDL), connecting a temporary signal to long-term memory operations requires a fundamental structural relationship between a **Transient Event** and a **Persistent Register**.
+
+---
+
+## 1. Core Relationship
+
+```text
+               +--------------------------------------+
+               |      Transient / Temporary Signal    |
+               |             (frame_done)             |
+               +------------------+-------------------+
+                                  |
+                                  | Trigger on posedge
+                                  v
+               +--------------------------------------+
+               |          Persistent Register         |
+               |              (bank_sel)              |
+               +------------------+-------------------+
+                                  |
+            +---------------------+---------------------+
+            |                                           |
+            v                                           v
+   +------------------+                        +------------------+
+   | Write Target     |                        | Read Target      |
+   | (mem_a or mem_b) |                        | (mem_b or mem_a) |
+   +------------------+                        +------------------+
 ## Output 
 ### Waveforms
 <img width="959" height="298" alt="image" src="https://github.com/user-attachments/assets/89eefca3-821a-4b82-a673-ce0f26cb3c61" />
