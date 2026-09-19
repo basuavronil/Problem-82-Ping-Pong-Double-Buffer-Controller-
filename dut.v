@@ -3,12 +3,6 @@ module ping_pong_buffer (
     input  wire       rst_n,
     input  wire       frame_done,
     
-    // frame done is the triggering event and the bank_sel is the internal register that does the switching 
-    // relationship between them 
-    // if (frame_done) 
-    //    bank_sel = ~ bank_sel
-
-    
     // Write Interface (Producer)
     input  wire       wr_en,
     input  wire [3:0] wr_addr,
@@ -36,9 +30,12 @@ module ping_pong_buffer (
         end
     end
 
-    // Write Logic
-    always @(posedge clk) begin
-        if (wr_en) begin
+    // Write Logic with Reset
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            // Reset state action for write interface (if needed)
+            // Note: mem_a and mem_b are left unreset to allow Block RAM inferencing
+        end else if (wr_en) begin
             if (bank_sel == 1'b0) begin
                 mem_b[wr_addr] <= wr_data;
             end else begin
@@ -47,9 +44,11 @@ module ping_pong_buffer (
         end
     end
 
-    // Read Logic
-    always @(posedge clk) begin
-        if (rd_en) begin
+    // Read Logic with Reset
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            rd_data <= 8'h00; // Clear output data on reset
+        end else if (rd_en) begin
             if (bank_sel == 1'b0) begin
                 rd_data <= mem_a[rd_addr];
             end else begin
