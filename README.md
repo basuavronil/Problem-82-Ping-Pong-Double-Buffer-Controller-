@@ -112,6 +112,7 @@ In digital hardware design (Verilog/VHDL), connecting a temporary signal to long
 ## Output 
 ### Waveforms
 <img width="953" height="112" alt="image" src="https://github.com/user-attachments/assets/b51435f5-0745-40c3-bb69-431a8d454302" />
+
 # Ping-Pong Buffer — Waveform Walkthrough
 
 This document explains the simulation waveform for a **ping-pong (double) buffer**
