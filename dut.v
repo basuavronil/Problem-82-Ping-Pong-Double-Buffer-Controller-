@@ -10,7 +10,10 @@ module ping_pong_buffer (
     // Read Interface (Consumer)
     input  wire       rd_en,
     input  wire [3:0] rd_addr,
-    output reg  [7:0] rd_data
+    output reg  [7:0] rd_data,
+
+    // Status Output Signal
+    output wire       frame_done
 );
 
     // Two Memory Banks: Depth of 16 entries, 8 bits wide
@@ -20,11 +23,10 @@ module ping_pong_buffer (
     // Bank Switch Flag: 0 = Write to B / Read from A, 1 = Write to A / Read from B
     reg bank_sel;
 
-    // Internal continuous assignment wire
-    wire frame_done;
+    // Output assign: High only when BOTH writer and reader reach address 15 (4'd15) simultaneously
     assign frame_done = (wr_en && (wr_addr == 4'd15)) && (rd_en && (rd_addr == 4'd15));
 
-    // Toggle active memory bank when internal frame_done triggers
+    // Toggle active memory bank on frame_done pulse
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             bank_sel <= 1'b0;
