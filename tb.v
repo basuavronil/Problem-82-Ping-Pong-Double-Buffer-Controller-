@@ -16,9 +16,12 @@ module tb_ping_pong_buffer();
     reg  [3:0] rd_addr;
     wire [7:0] rd_data;
 
+    // Output Status Signal Monitored from Module
+    wire       frame_done;
+
     integer i;
 
-    // Instantiate Unit Under Test (UUT)
+    // Instantiate Unit Under Test (UUT) with frame_done connected
     ping_pong_buffer uut (
         .clk(clk),
         .rst_n(rst_n),
@@ -27,11 +30,18 @@ module tb_ping_pong_buffer();
         .wr_data(wr_data),
         .rd_en(rd_en),
         .rd_addr(rd_addr),
-        .rd_data(rd_data)
+        .rd_data(rd_data),
+        .frame_done(frame_done) // Connected to output port
     );
 
     // 100 MHz Clock Generation (10ns Period)
     always #5 clk = ~clk;
+
+    // VCD Waveform Dumping Configuration
+    initial begin
+        $dumpfile("ping_pong_buffer.vcd"); // Creates waveform dump file
+        $dumpvars(0, tb_ping_pong_buffer);  // Dumps testbench and module hierarchy
+    end
 
     initial begin
         // Initialize Inputs
@@ -51,15 +61,14 @@ module tb_ping_pong_buffer();
         $display("-------------------------------------------------------");
         $display("=== PHASE 1: Fill Bank B (Addresses 0 to 15) ===");
         $display("-------------------------------------------------------");
-        // Note: Reader must also read to location 15 so frame_done = 1 on cycle 15
         for (i = 0; i < 16; i = i + 1) begin
             @(posedge clk);
             wr_en   <= 1'b1;
             wr_addr <= i[3:0];
-            wr_data <= 8'hA0 + i[7:0]; // Data pattern 0xA0 to 0xAF
+            wr_data <= 8'hA0 + i[7:0]; // Pattern 0xA0 to 0xAF
 
             rd_en   <= 1'b1;
-            rd_addr <= i[3:0]; // Dummy reads to satisfy rd_addr == 15 requirement
+            rd_addr <= i[3:0]; // Satisfies rd_addr == 15 requirement
         end
 
         // Deassert signals at end of frame
@@ -77,7 +86,7 @@ module tb_ping_pong_buffer();
             // Write new data into Bank A
             wr_en   <= 1'b1;
             wr_addr <= i[3:0];
-            wr_data <= 8'hB0 + i[7:0]; // Data pattern 0xB0 to 0xBF
+            wr_data <= 8'hB0 + i[7:0]; // Pattern 0xB0 to 0xBF
 
             // Read stored data back from Bank B
             rd_en   <= 1'b1;
@@ -98,8 +107,11 @@ module tb_ping_pong_buffer();
         $finish;
     end
 
-    // Monitor read operations on every clock cycle
+    // Monitor Output Signals
     always @(posedge clk) begin
+        if (frame_done) begin
+            $display("[TIME %0t ns] *** PULSE DETECTED: frame_done = 1 | Toggling bank_sel *** ", $time);
+        end
         if (rd_en) begin
             $display("[TIME %0t ns] Read Address = %0d | Output rd_data = 8'h%h", $time, rd_addr, rd_data);
         end
