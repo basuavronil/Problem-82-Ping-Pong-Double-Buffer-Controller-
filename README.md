@@ -30,6 +30,17 @@ Think of a Ping-Pong buffer like **two buckets** used by two people: a **Painter
 Both sides run in parallel with **zero wait states** and **zero memory contention**.
 
 ---
+## Frame Completion & Bank Swap Mechanism
+
+### Internal `frame_done` Definition
+Instead of relying on an external input port, `frame_done` is calculated internally using a continuous combinational assignment (`wire`):
+
+```verilog
+// Internal continuous assignment wire
+wire frame_done;
+
+// Triggers HIGH only when BOTH writer and reader reach address 15 (4'd15) simultaneously
+assign frame_done = (wr_en && (wr_addr == 4'd15)) && (rd_en && (rd_addr == 4'd15));
 
 ## Block Diagram
 
