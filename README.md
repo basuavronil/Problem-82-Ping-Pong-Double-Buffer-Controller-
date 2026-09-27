@@ -1,6 +1,12 @@
 # Problem-82-Ping-Pong-Double-Buffer-Controller-
 A two-bank memory wrapper where Bank A is written while Bank B is read, swapping roles on a frame_done signal to prevent data corruption during continuous streaming.
+### Bank Synchronization Constraint
 
+The bank swap (`bank_sel <= ~bank_sel`) occurs **only after every single memory location in the active write bank has been completely written AND every single memory location in the active read bank has been completely read**. 
+
+Because each memory bank contains 16 locations (addresses `0` through `15`), a swap cannot trigger mid-frame. 
+
+If the writer fills Bank B up to location 15 while the reader is still reading Bank A at location 10, the system waits until the reader also finishes reading location 15. Only when all 16 slots of the writing bank are filled **and** all 16 slots of the reading bank are consumed on the exact same clock cycle will the `frame_done` condition evaluate to true, safely toggling `bank_sel` to swap the banks for the next frame.
 # Ping-Pong (Double) Buffer Controller
 
 A light, dual-bank memory controller written in Verilog to prevent read-write data corruption in real-time streaming architectures.
